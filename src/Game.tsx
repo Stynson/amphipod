@@ -120,7 +120,7 @@ export default function Game({ input }: { input: string }) {
   };
   useEffect(() => {
     processInput();
-  }, [input]);
+  }, [input, processInput]);
 
   let [isPart1, setIsPart1] = useState<any>(null);
   let [selected, setSelected] = useState<any>(null);
