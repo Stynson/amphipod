@@ -88,19 +88,23 @@ let part2 = [
 ];
 
 export default function Game({ input }: { input: string }) {
+  let [history, setHistory] = useState<Array<string>>([]);
   let [map, setMap] = useState<Array<Array<string>>>(part1);
+  let [score, setScore] = useState<number>(0);
 
   const processInput = useCallback(() => {
-    setMap((oldMap) => {
+    setMap(() => {
       let copy = JSON.parse(JSON.stringify(part1));
       let [first, second] = input.split("\n").slice(2, 4);
       console.log(first, second);
       copy[2] = first.split("");
       copy[3] = [...second.split(""), " ", " "];
 
+      setHistory([JSON.stringify([copy, 0])]);
       return copy;
     });
   }, [input]);
+
   const setupPart1 = () => {
     setMap((oldMap) => {
       let copy = JSON.parse(JSON.stringify(oldMap));
@@ -119,13 +123,14 @@ export default function Game({ input }: { input: string }) {
     });
   };
   useEffect(() => {
+    console.log("process useeffectinput");
     processInput();
-  }, [input, processInput]);
+    //eslint-disable-next-line
+  }, [input]);
 
   let [isPart1, setIsPart1] = useState<any>(null);
   let [selected, setSelected] = useState<any>(null);
   let [error] = useState<any>(null);
-  let [score, setScore] = useState<number>(0);
 
   return (
     <GameContainer>
@@ -179,15 +184,26 @@ export default function Game({ input }: { input: string }) {
                             setScore((score) => {
                               let moveCount =
                                 i - 1 + Math.abs(sj - j) + (si - 1);
-                              return (
-                                score + moveCount * scoreBoard[map[si][sj]]
-                              );
-                            });
-                            setMap((oldMap) => {
-                              let copy = JSON.parse(JSON.stringify(oldMap));
-                              copy[i][j] = copy[si][sj];
-                              copy[si][sj] = ".";
-                              return copy;
+                              let newScore =
+                                score + moveCount * scoreBoard[map[si][sj]];
+                              setMap((oldMap) => {
+                                let copy = JSON.parse(JSON.stringify(oldMap));
+                                copy[i][j] = copy[si][sj];
+                                copy[si][sj] = ".";
+                                setHistory((history) => {
+                                  let historyCopy = JSON.parse(
+                                    JSON.stringify(history)
+                                  );
+                                  console.log("setting map", copy);
+
+                                  historyCopy.push(
+                                    JSON.stringify([copy, newScore])
+                                  );
+                                  return historyCopy;
+                                });
+                                return copy;
+                              });
+                              return newScore;
                             });
                             setSelected(null);
                           }
@@ -220,7 +236,22 @@ export default function Game({ input }: { input: string }) {
         >
           [Reset]
         </button>
-        <button disabled>[Undo]</button>
+        <button
+          disabled={Boolean(history.length <= 1)}
+          onClick={() => {
+            history.pop();
+            let previous = history[history.length - 1];
+            if (previous) {
+              let parsed = JSON.parse(previous);
+              let [historyMap, historyScore] = parsed;
+              setScore(historyScore);
+              setMap(historyMap);
+              setSelected(null);
+            }
+          }}
+        >
+          [Undo]
+        </button>
       </ButtonContainer>
     </GameContainer>
   );
