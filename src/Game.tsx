@@ -74,22 +74,25 @@ const scoreBoard: Record<string, number> = {
   D: 1000,
 };
 
-export default function Game({ input }: { input: string }) {
-  let [map, setMap] = useState<Array<Array<string>>>([
-    ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
-    ["#", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#"],
-    ["#", "#", "#", "B", "#", "A", "#", "C", "#", "D", "#", "#", "#"],
-    [" ", " ", "#", "B", "#", "A", "#", "C", "#", "D", "#", " ", " "],
-    [" ", " ", "#", "#", "#", "#", "#", "#", "#", "#", "#", " ", " "],
-  ]);
+let part1 = [
+  ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#"],
+  ["#", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "#"],
+  ["#", "#", "#", "B", "#", "A", "#", "C", "#", "D", "#", "#", "#"],
+  [" ", " ", "#", "B", "#", "A", "#", "C", "#", "D", "#", " ", " "],
+  [" ", " ", "#", "#", "#", "#", "#", "#", "#", "#", "#", " ", " "],
+];
 
-  let part2 = [
-    [" ", " ", "#", "D", "#", "C", "#", "B", "#", "A", "#", " ", " "],
-    [" ", " ", "#", "D", "#", "B", "#", "A", "#", "C", "#", " ", " "],
-  ];
-  useEffect(() => {
+let part2 = [
+  [" ", " ", "#", "D", "#", "C", "#", "B", "#", "A", "#", " ", " "],
+  [" ", " ", "#", "D", "#", "B", "#", "A", "#", "C", "#", " ", " "],
+];
+
+export default function Game({ input }: { input: string }) {
+  let [map, setMap] = useState<Array<Array<string>>>(part1);
+
+  const processInput = () => {
     setMap((oldMap) => {
-      let copy = JSON.parse(JSON.stringify(oldMap));
+      let copy = JSON.parse(JSON.stringify(part1));
       let [first, second] = input.split("\n").slice(2, 4);
       console.log(first, second);
       copy[2] = first.split("");
@@ -97,6 +100,26 @@ export default function Game({ input }: { input: string }) {
 
       return copy;
     });
+  };
+  const setupPart1 = () => {
+    setMap((oldMap) => {
+      let copy = JSON.parse(JSON.stringify(oldMap));
+      copy.splice(3, 2);
+
+      return copy;
+    });
+  };
+  const setupPart2 = () => {
+    setMap((oldMap) => {
+      let copy = JSON.parse(JSON.stringify(oldMap));
+      copy.splice(3, 0, part2[0]);
+      copy.splice(4, 0, part2[1]);
+
+      return copy;
+    });
+  };
+  useEffect(() => {
+    processInput();
   }, [input]);
 
   let [isPart1, setIsPart1] = useState<any>(null);
@@ -111,12 +134,7 @@ export default function Game({ input }: { input: string }) {
           onClick={() => {
             setIsPart1(true);
             if (!isPart1) {
-              setMap((oldMap) => {
-                let copy = JSON.parse(JSON.stringify(oldMap));
-                copy.splice(3, 2);
-
-                return copy;
-              });
+              setupPart1();
             }
           }}
         >
@@ -126,13 +144,7 @@ export default function Game({ input }: { input: string }) {
           onClick={() => {
             setIsPart1(false);
             if (isPart1 === true || isPart1 === null) {
-              setMap((oldMap) => {
-                let copy = JSON.parse(JSON.stringify(oldMap));
-                copy.splice(3, 0, part2[0]);
-                copy.splice(4, 0, part2[1]);
-
-                return copy;
-              });
+              setupPart2();
             }
           }}
         >
@@ -193,6 +205,22 @@ export default function Game({ input }: { input: string }) {
           </GameRow>
         ))}
       </MapContainer>
+      <ButtonContainer>
+        <button
+          onClick={() => {
+            setScore(0);
+            processInput();
+            if (isPart1 === null || isPart1) {
+              //              setupPart1();
+            } else {
+              setupPart2();
+            }
+          }}
+        >
+          reset
+        </button>
+        <button disabled>undo</button>
+      </ButtonContainer>
     </GameContainer>
   );
 }
