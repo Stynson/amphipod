@@ -67,3 +67,7 @@ input[type="submit"]:hover,
 input[type="reset"]:hover {
   color: #99ff99;
 }
+
+button:disabled {
+  color: gray;
+}

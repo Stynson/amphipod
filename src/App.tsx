@@ -6,6 +6,7 @@ import "./App.css";
 const AppContainer = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   background: #0f0f23;
   height: 100vh;
@@ -17,11 +18,18 @@ const InputContainer = styled.div`
   flex-direction: column;
 `;
 
+const Text = styled.div`
+  color: white;
+  font-weight: 900;
+  margin-bottom: 20px;
+`;
+
 function App() {
   let [input, setInput] = useState<string>("");
   let ref = useRef<any>();
   return (
     <AppContainer>
+      <Text>--- Day 23: Amphipod ---</Text>
       {input === "" && (
         <InputContainer>
           <textarea
