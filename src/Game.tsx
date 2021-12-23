@@ -96,35 +96,60 @@ export default function Game({ input }: { input: string }) {
     setMap(() => {
       let copy = JSON.parse(JSON.stringify(part1));
       let [first, second] = input.split("\n").slice(2, 4);
-      console.log(first, second);
       copy[2] = first.split("");
       copy[3] = [...second.split(""), " ", " "];
 
-      setHistory([JSON.stringify([copy, 0])]);
       return copy;
     });
   }, [input]);
 
   const setupPart1 = () => {
     setMap((oldMap) => {
-      let copy = JSON.parse(JSON.stringify(oldMap));
+      let copy = JSON.parse(history[0])[0];
       copy.splice(3, 2);
+      setHistory([JSON.stringify([copy, 0])]);
 
       return copy;
     });
+    setScore(0);
   };
-  const setupPart2 = () => {
+  const resetPart2 = () => {
     setMap((oldMap) => {
       let copy = JSON.parse(JSON.stringify(oldMap));
       copy.splice(3, 0, part2[0]);
       copy.splice(4, 0, part2[1]);
 
+      setHistory([JSON.stringify([copy, 0])]);
+
       return copy;
     });
+    setScore(0);
+  };
+  const setupPart2 = () => {
+    setMap((oldMap) => {
+      let copy = JSON.parse(history[0])[0];
+      copy.splice(3, 0, part2[0]);
+      copy.splice(4, 0, part2[1]);
+
+      setHistory([JSON.stringify([copy, 0])]);
+
+      return copy;
+    });
+    setScore(0);
   };
   useEffect(() => {
-    console.log("process useeffectinput");
-    processInput();
+    //    processInput();
+    //processInput with seethistory
+    setMap(() => {
+      let copy = JSON.parse(JSON.stringify(part1));
+      let [first, second] = input.split("\n").slice(2, 4);
+      copy[2] = first.split("");
+      copy[3] = [...second.split(""), " ", " "];
+
+      setHistory([JSON.stringify([copy, 0])]);
+
+      return copy;
+    });
     //eslint-disable-next-line
   }, [input]);
 
@@ -194,7 +219,6 @@ export default function Game({ input }: { input: string }) {
                                   let historyCopy = JSON.parse(
                                     JSON.stringify(history)
                                   );
-                                  console.log("setting map", copy);
 
                                   historyCopy.push(
                                     JSON.stringify([copy, newScore])
@@ -229,7 +253,7 @@ export default function Game({ input }: { input: string }) {
             if (isPart1 === null || isPart1) {
               //              setupPart1();
             } else {
-              setupPart2();
+              resetPart2();
             }
             setSelected(null);
           }}
@@ -237,7 +261,7 @@ export default function Game({ input }: { input: string }) {
           [Reset]
         </button>
         <button
-          disabled={Boolean(history.length <= 1)}
+          disabled={Boolean(history.length < 2)}
           onClick={() => {
             history.pop();
             let previous = history[history.length - 1];
@@ -256,10 +280,3 @@ export default function Game({ input }: { input: string }) {
     </GameContainer>
   );
 }
-
-//let foo =  `#...........#
-//</div> ###B#C#B#D###
-//</div>   #A#D#C#A#
-//</div>   #A#D#C#A#
-//</div>   #A#D#C#A#
-//</div>   #########`
