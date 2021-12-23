@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
 const GameContainer = styled.div`
@@ -90,7 +90,7 @@ let part2 = [
 export default function Game({ input }: { input: string }) {
   let [map, setMap] = useState<Array<Array<string>>>(part1);
 
-  const processInput = () => {
+  const processInput = useCallback(() => {
     setMap((oldMap) => {
       let copy = JSON.parse(JSON.stringify(part1));
       let [first, second] = input.split("\n").slice(2, 4);
@@ -100,7 +100,7 @@ export default function Game({ input }: { input: string }) {
 
       return copy;
     });
-  };
+  }, [input]);
   const setupPart1 = () => {
     setMap((oldMap) => {
       let copy = JSON.parse(JSON.stringify(oldMap));
