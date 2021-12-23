@@ -138,7 +138,7 @@ export default function Game({ input }: { input: string }) {
             }
           }}
         >
-          part1
+          [Part 1]
         </button>
         <button
           onClick={() => {
@@ -148,7 +148,7 @@ export default function Game({ input }: { input: string }) {
             }
           }}
         >
-          part2
+          [Part 2]
         </button>
       </ButtonContainer>
       <ScoreCard>{score}</ScoreCard>
@@ -218,9 +218,9 @@ export default function Game({ input }: { input: string }) {
             setSelected(null);
           }}
         >
-          reset
+          [Reset]
         </button>
-        <button disabled>undo</button>
+        <button disabled>[Undo]</button>
       </ButtonContainer>
     </GameContainer>
   );

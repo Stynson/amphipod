@@ -36,7 +36,7 @@ function App() {
               setInput(ref?.current?.value);
             }}
           >
-            Submit input
+            [Submit input]
           </button>
         </InputContainer>
       )}
