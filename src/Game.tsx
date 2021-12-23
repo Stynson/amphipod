@@ -1,3 +1,4 @@
+import { stringify } from "node:querystring";
 import { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 
@@ -67,12 +68,12 @@ const ButtonContainer = styled.div`
   margin: 20px;
 `;
 
-const scoreBoard = Object.freeze({
+const scoreBoard: Record<string, number> = {
   A: 1,
   B: 10,
   C: 100,
   D: 1000,
-});
+};
 
 export default function Game({ input }: { input: string }) {
   let [map, setMap] = useState<Array<Array<string>>>([
