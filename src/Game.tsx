@@ -215,6 +215,7 @@ export default function Game({ input }: { input: string }) {
             } else {
               setupPart2();
             }
+            setSelected(null);
           }}
         >
           reset
